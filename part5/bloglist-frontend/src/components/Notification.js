@@ -3,6 +3,11 @@ export default function Notification({ notification }) {
     backgroundColor: 'lightgrey',
     color: notification.type === 'info' ? 'green' : 'red',
     padding: 10,
+    border: 'solid',
   };
-  return <div style={style}>{notification.notification}</div>;
+  return (
+    <div className='notification' style={style}>
+      {notification.notification}
+    </div>
+  );
 }
