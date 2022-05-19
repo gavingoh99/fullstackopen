@@ -1,0 +1,11 @@
+{
+  "blogs": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode",
+      "url": "testurl",
+      "likes": 5
+    }
+  ]
+}
