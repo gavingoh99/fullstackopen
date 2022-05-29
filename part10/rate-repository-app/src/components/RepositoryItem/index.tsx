@@ -1,5 +1,5 @@
 import { View, StyleSheet } from 'react-native';
-import { Repository } from '../../types';
+import { Repository } from '../../../types';
 import RepositoryHeader from './RepositoryHeader';
 import RepositoryFooter from './RepositoryFooter';
 const styles = StyleSheet.create({

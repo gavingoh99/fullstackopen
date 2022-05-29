@@ -1,10 +1,13 @@
 import { Formik } from 'formik';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, Keyboard } from 'react-native';
 import * as yup from 'yup';
 
 import Text from './Text';
 import FormikTextInput from './FormikTextInput';
 import theme from '../../theme';
+import useSignIn from '../hooks/useSignIn';
+import { NavigationProp } from '@react-navigation/native';
+import { useApolloClient } from '@apollo/client';
 
 const styles = StyleSheet.create({
   signInButton: {
@@ -42,10 +45,38 @@ const validationSchema = yup.object().shape({
   username: yup.string().required('Username is required'),
   password: yup.string().required('Password is required'),
 });
-const SignIn = () => {
-  const onSubmit = (values: SignInFormValues) => {
-    console.log(`Username: ${values.username}`);
-    console.log(`Password: ${values.password}`);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const SignIn = ({ navigation }: { navigation: NavigationProp<any, any> }) => {
+  const { signIn } = useSignIn();
+  const apolloClient = useApolloClient();
+  const onSubmit = async (
+    values: SignInFormValues,
+    {
+      resetForm,
+      setSubmitting,
+      setFieldTouched,
+    }: {
+      resetForm: (object: SignInFormValues) => void;
+      setSubmitting: (submit: boolean) => void;
+      setFieldTouched: (field: string, _: boolean, __: boolean) => void;
+    }
+  ) => {
+    const { username, password } = values;
+    try {
+      const { data } = await signIn({ username, password });
+      if (data.authenticate !== null) {
+        navigation.navigate('RepositoryList');
+        void apolloClient.resetStore();
+        Keyboard.dismiss();
+        setTimeout(() => {
+          setSubmitting(false);
+          resetForm(initialValues);
+          setFieldTouched('password', false, false);
+        }, 5);
+      }
+    } catch (e: unknown) {
+      console.error(e);
+    }
   };
   return (
     <View
