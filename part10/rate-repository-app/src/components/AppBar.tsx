@@ -3,7 +3,7 @@ import { NavigationProp } from '@react-navigation/native';
 import { useApolloClient, useQuery } from '@apollo/client';
 
 import theme from '../../theme';
-import { GET_AUTHENTICATED_USER } from '../graphql/queries';
+import { GET_CURRENT_USER } from '../graphql/queries';
 import useAuthStorage from '../hooks/useAuthStorage';
 const styles = StyleSheet.create({
   container: {
@@ -13,13 +13,13 @@ const styles = StyleSheet.create({
   tabs: {
     color: 'white',
     margin: 10,
-    fontSize: 20,
+    fontSize: 15,
   },
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const AppBar = ({ navigation }: { navigation: NavigationProp<any, any> }) => {
-  const results = useQuery(GET_AUTHENTICATED_USER);
+  const results = useQuery(GET_CURRENT_USER);
   const apolloClient = useApolloClient();
   const authStorage = useAuthStorage();
   const logout = () => {
@@ -34,13 +34,26 @@ const AppBar = ({ navigation }: { navigation: NavigationProp<any, any> }) => {
           <Text style={styles.tabs}>Repositories</Text>
         </Pressable>
         {!results.loading && results.data.me !== null ? (
-          <Pressable onPress={() => logout()}>
-            <Text style={styles.tabs}>Sign Out</Text>
-          </Pressable>
+          <>
+            <Pressable onPress={() => navigation.navigate('CreateReview')}>
+              <Text style={styles.tabs}>Create a review</Text>
+            </Pressable>
+            <Pressable onPress={() => navigation.navigate('UserReviews')}>
+              <Text style={styles.tabs}>My reviews</Text>
+            </Pressable>
+            <Pressable onPress={() => logout()}>
+              <Text style={styles.tabs}>Sign Out</Text>
+            </Pressable>
+          </>
         ) : (
-          <Pressable onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.tabs}>Sign In</Text>
-          </Pressable>
+          <>
+            <Pressable onPress={() => navigation.navigate('Login')}>
+              <Text style={styles.tabs}>Sign In</Text>
+            </Pressable>
+            <Pressable onPress={() => navigation.navigate('Signup')}>
+              <Text style={styles.tabs}>Sign Up</Text>
+            </Pressable>
+          </>
         )}
       </ScrollView>
     </View>

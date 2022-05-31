@@ -36,6 +36,7 @@ const RepositoryHeader = ({
           style={{ marginBottom: 7 }}
           fontSize='subheading'
           fontWeight='bold'
+          testID='repositoryName'
         >
           {name}
         </Text>

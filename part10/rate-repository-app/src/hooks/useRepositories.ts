@@ -1,24 +1,8 @@
-import { useState, useEffect } from 'react';
 // import { request } from '../utils/fetch';
-import { Repository } from '../../types';
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { GET_REPOSITORIES } from '../graphql/queries';
+import { FetchedRepositories } from '../../types';
 
-interface Edge {
-  node: Repository;
-  cursor: string;
-}
-interface PageInfo {
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-  startCursor: string;
-  endCursor: string;
-}
-interface FetchedRepositories {
-  totalCount?: number;
-  edges: Edge[];
-  pageInfo?: PageInfo;
-}
 // using fetch API to query REST endpoint
 // const useRepositories = () => {
 //   const [repositories, setRepositories] = useState<FetchedRepositories>();
@@ -34,26 +18,26 @@ interface FetchedRepositories {
 //   useEffect(() => void fetchRepositories(), []);
 //   return { repositories, loading, refetch: fetchRepositories };
 // };
-const useRepositories = () => {
-  const [repositories, setRepositories] = useState<FetchedRepositories>();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [queryRepositories, { loading, data, error }] = useLazyQuery(
-    GET_REPOSITORIES,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  );
-  useEffect(() => {
-    void queryRepositories();
-  }, []);
-
-  useEffect(() => {
-    if (!loading) {
-      setIsLoading(false);
-      setRepositories(data?.repositories as FetchedRepositories);
-    }
-  }, [loading]);
-
-  return { repositories, isLoading, refetch: queryRepositories };
+const useRepositories = (variables: object) => {
+  const { data, loading, fetchMore, ...result } = useQuery(GET_REPOSITORIES, {
+    variables,
+    fetchPolicy: 'cache-and-network',
+  });
+  const handleFetchMore = () => {
+    const canFetchMore = !loading && data?.repositories.pageInfo.hasNextPage;
+    if (!canFetchMore) return;
+    fetchMore({
+      variables: {
+        after: data.repositories.pageInfo.endCursor,
+        ...variables,
+      },
+    });
+  };
+  return {
+    repositories: data?.repositories as FetchedRepositories,
+    fetchMore: handleFetchMore,
+    loading,
+    ...result,
+  };
 };
 export default useRepositories;

@@ -34,9 +34,11 @@ const FormikTextInput = ({ name, ...props }: { name: string }) => {
         style={textInputStyle}
         onChangeText={(value) => helpers.setValue(value)}
         onBlur={() => helpers.setTouched(true)}
-        value={field.value}
+        value={
+          typeof field.value === 'number' ? field.value.toString() : field.value
+        }
         error={showError}
-        secureTextEntry={name === 'password'}
+        secureTextEntry={name === 'password' || name === 'confirmPassword'}
         {...props}
       />
       {showError && <Text style={styles.errorText}>{meta.error}</Text>}

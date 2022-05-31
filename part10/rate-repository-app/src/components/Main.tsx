@@ -4,6 +4,10 @@ import { NavigationProp } from '@react-navigation/native';
 import RepositoryList from './RepositoryList';
 import SignIn from './SignIn';
 import AppBar from './AppBar';
+import RepositoryView from './RepositoryView';
+import CreateReview from './CreateReview';
+import SignUp from './SignUp';
+import UserReviews from './UserReviews';
 
 const styles = StyleSheet.create({
   container: {
@@ -31,6 +35,10 @@ const Main = () => {
         >
           <Stack.Screen name='RepositoryList' component={RepositoryList} />
           <Stack.Screen name='Login' component={SignIn} />
+          <Stack.Screen name='Repository' component={RepositoryView} />
+          <Stack.Screen name='CreateReview' component={CreateReview} />
+          <Stack.Screen name='Signup' component={SignUp} />
+          <Stack.Screen name='UserReviews' component={UserReviews} />
         </Stack.Group>
       </Stack.Navigator>
     </View>
